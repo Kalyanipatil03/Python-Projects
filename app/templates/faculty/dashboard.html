@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Faculty Dashboard - CampusConnect{% endblock %}
+
+{% block content %}
+<div class="row my-4">
+    <div class="col-md-12">
+        <div class="card bg-dark text-white shadow-sm rounded-3">
+            <div class="card-body p-4">
+                <h2 class="fw-bold mb-1">Welcome, Prof. {{ profile.first_name }} {{ profile.last_name }}</h2>
+                <p class="mb-0 text-white-50">Employee ID: <strong>{{ profile.employee_id }}</strong> | Department: <strong>{{ profile.department.name }}</strong></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Assigned Subjects Card -->
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white py-3">
+                <h5 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-book me-2 text-primary"></i>Assigned Subjects</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-3">Subject Name</th>
+                                <th>Code</th>
+                                <th>Semester</th>
+                                <th class="text-end pe-3">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if subjects %}
+                                {% for subject in subjects %}
+                                    <tr>
+                                        <td class="ps-3 fw-semibold text-dark">{{ subject.name }}</td>
+                                        <td><span class="badge bg-secondary-subtle text-secondary">{{ subject.code }}</span></td>
+                                        <td>Semester {{ subject.semester }}</td>
+                                        <td class="text-end pe-3">
+                                            <a href="{{ url_for('faculty.mark_attendance', subject_id=subject.id) }}" class="btn btn-sm btn-primary fw-bold">
+                                                <i class="fa-solid fa-user-check me-1"></i> Mark Attendance
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center py-4 text-muted">No subjects assigned yet.</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notices Panel -->
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white py-3">
+                <h5 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-bullhorn me-2 text-warning"></i>Announcements</h5>
+            </div>
+            <div class="card-body">
+                {% if notices %}
+                    <div class="list-group list-group-flush">
+                        {% for notice in notices %}
+                            <div class="list-group-item px-0 border-0 mb-2">
+                                <h6 class="fw-bold mb-1 text-dark">{{ notice.title }}</h6>
+                                <p class="text-muted small mb-1">{{ notice.description|truncate(80) }}</p>
+                                <small class="text-muted" style="font-size: 0.75rem;">{{ notice.created_at.strftime('%Y-%m-%d') }}</small>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted small">No recent notices.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
