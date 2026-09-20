@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}{{ mode }} Password{% endblock %}
+{% block content %}
+<section class="form-card">
+  <div class="form-heading">
+    <div>
+      <p class="eyebrow">VAULT ENTRY</p>
+      <h1>{{ mode }} Password</h1>
+    </div>
+    <a class="secondary button" href="{{ url_for('dashboard') }}">Back</a>
+  </div>
+  <form method="post">
+    <div class="two-col">
+      <div>
+        <label>Title *</label>
+        <input name="title" value="{{ entry.get('title','') }}" placeholder="e.g. Gmail" required>
+      </div>
+      <div>
+        <label>Username / Email *</label>
+        <input name="username" value="{{ entry.get('username','') }}" placeholder="you@example.com" required>
+      </div>
+    </div>
+    <label>Password *</label>
+    <div class="password-row">
+      <input id="password" type="password" name="password" value="{{ entry.get('password','') }}" required>
+      <button type="button" class="secondary" onclick="togglePassword()">Show</button>
+      <button type="button" class="secondary" onclick="generateIntoField()">Generate</button>
+    </div>
+    <label>Website</label>
+    <input name="website" value="{{ entry.get('website','') }}" placeholder="https://example.com">
+    <label>Notes</label>
+    <textarea name="notes" rows="4" placeholder="Optional notes">{{ entry.get('notes','') }}</textarea>
+    <button class="primary full">{{ mode }} Password</button>
+  </form>
+</section>
+<script>
+function togglePassword() {
+  const p = document.getElementById('password');
+  p.type = p.type === 'password' ? 'text' : 'password';
+}
+async function generateIntoField() {
+  const res = await fetch('/api/password?length=20');
+  const data = await res.json();
+  const p = document.getElementById('password');
+  p.value = data.password;
+  p.type = 'text';
+}
+</script>
+{% endblock %}

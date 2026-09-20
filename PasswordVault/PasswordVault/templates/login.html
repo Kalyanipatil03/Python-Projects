@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Unlock Vault{% endblock %}
+{% block content %}
+<section class="auth-card">
+  <div class="icon">🔑</div>
+  <h1>Unlock your vault</h1>
+  <p class="muted">Enter your master password to access your encrypted passwords.</p>
+  <form method="post">
+    <label>Master password</label>
+    <input type="password" name="master_password" required autofocus>
+    <button class="primary full">Unlock Vault</button>
+  </form>
+</section>
+{% endblock %}

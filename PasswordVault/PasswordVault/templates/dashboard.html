@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}My Vault{% endblock %}
+{% block content %}
+<div class="hero">
+  <div>
+    <p class="eyebrow">PRIVATE • ENCRYPTED</p>
+    <h1>My Password Vault</h1>
+    <p class="muted">Your stored credentials are encrypted before they are saved.</p>
+  </div>
+  <a class="primary button" href="{{ url_for('add_entry') }}">+ Add Password</a>
+</div>
+
+<div class="toolbar">
+  <input id="search" type="search" placeholder="Search by title or username..." oninput="filterEntries()">
+  <button class="secondary" onclick="generatePassword()">Generate Password</button>
+</div>
+
+<div id="generated" class="generated hidden">
+  <span id="generatedText"></span>
+  <button onclick="copyGenerated()">Copy</button>
+</div>
+
+<div class="grid" id="entries">
+{% for entry in entries %}
+  <article class="card entry" data-search="{{ (entry.title ~ ' ' ~ entry.username)|lower }}">
+    <div class="card-top">
+      <div class="avatar">{{ entry.title[:1]|upper }}</div>
+      <div>
+        <h3>{{ entry.title }}</h3>
+        <p class="muted">{{ entry.username }}</p>
+      </div>
+    </div>
+    {% if entry.website %}<p>🌐 {{ entry.website }}</p>{% endif %}
+    {% if entry.notes %}<p class="notes">{{ entry.notes }}</p>{% endif %}
+    <div class="actions">
+      <a class="secondary button" href="{{ url_for('edit_entry', entry_id=entry.id) }}">Edit</a>
+      <form method="post" action="{{ url_for('delete_entry', entry_id=entry.id) }}" onsubmit="return confirm('Delete this entry?');">
+        <button class="danger">Delete</button>
+      </form>
+    </div>
+  </article>
+{% else %}
+  <div class="empty">
+    <div class="icon">🗝️</div>
+    <h2>Your vault is empty</h2>
+    <p class="muted">Add your first password to get started.</p>
+  </div>
+{% endfor %}
+</div>
+
+<script>
+function filterEntries() {
+  const q = document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('.entry').forEach(card => {
+    card.style.display = card.dataset.search.includes(q) ? '' : 'none';
+  });
+}
+async function generatePassword() {
+  const res = await fetch('/api/password?length=20');
+  const data = await res.json();
+  document.getElementById('generatedText').textContent = data.password;
+  document.getElementById('generated').classList.remove('hidden');
+}
+async function copyGenerated() {
+  await navigator.clipboard.writeText(document.getElementById('generatedText').textContent);
+}
+</script>
+{% endblock %}

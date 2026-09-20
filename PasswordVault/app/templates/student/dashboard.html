@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Student Dashboard - CampusConnect{% endblock %}
+
+{% block content %}
+<div class="row my-4">
+    <div class="col-md-12">
+        <div class="card bg-primary text-white shadow-sm rounded-3">
+            <div class="card-body p-4 d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="fw-bold mb-1">Welcome back, {{ profile.first_name }} {{ profile.last_name }}!</h2>
+                    <p class="mb-0">Roll No: <strong>{{ profile.roll_number }}</strong> | Semester: <strong>{{ profile.semester }}</strong></p>
+                </div>
+                <div>
+                    {% if attendance.pct >= 75.0 %}
+                        <a href="{{ url_for('student.download_hall_ticket') }}" class="btn btn-light fw-bold text-primary shadow-sm">
+                            <i class="fa-solid fa-file-pdf me-2"></i>Download Hall Ticket
+                        </a>
+                    {% else %}
+                        <button class="btn btn-light fw-bold text-muted" disabled title="Attendance below 75%">
+                            <i class="fa-solid fa-lock me-2"></i>Hall Ticket Blocked
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Smart Attendance Alert Banner -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="alert alert-{{ attendance.status }} border-0 shadow-sm d-flex align-items-center" role="alert">
+            <i class="fa-solid {% if attendance.status == 'danger' %}fa-triangle-exclamation{% else %}fa-circle-check{% endif %} fa-2x me-3"></i>
+            <div>
+                <h5 class="alert-heading fw-bold mb-1">Attendance Health Check</h5>
+                <p class="mb-0">{{ attendance.message }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Attendance Progress Gauge -->
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body text-center d-flex flex-column justify-content-center">
+                <h6 class="text-muted text-uppercase fw-semibold mb-3">Overall Attendance</h6>
+                <div class="progress mb-3" style="height: 25px;">
+                    <div class="progress-bar bg-{{ attendance.status }}" 
+                         role="progressbar" 
+                         style="width: {{ attendance.pct }}%;""
+                         aria-valuenow="{{ attendance.pct }}" 
+                         aria-valuemin="0" 
+                         aria-valuemax="100">
+                        {{ attendance.pct }}%
+                    </div>
+                </div>
+                <small class="text-muted">Required Benchmark: <strong>75%</strong></small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body text-center d-flex flex-column justify-content-center">
+                <i class="fa-solid fa-book-open fa-2x text-info mb-2"></i>
+                <h6 class="text-muted text-uppercase fw-semibold">Enrolled Subjects</h6>
+                <h2 class="display-6 fw-bold text-dark">{{ enrollments|length }}</h2>
+                <small class="text-muted">Active Current Semester</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body text-center d-flex flex-column justify-content-center">
+                <i class="fa-solid fa-bullhorn fa-2x text-warning mb-2"></i>
+                <h6 class="text-muted text-uppercase fw-semibold">Announcements</h6>
+                <h2 class="display-6 fw-bold text-dark">{{ notices|length }}</h2>
+                <small class="text-muted">Recent updates</small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

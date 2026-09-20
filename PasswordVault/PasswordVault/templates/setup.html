@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Create Vault{% endblock %}
+{% block content %}
+<section class="auth-card">
+  <div class="icon">🔐</div>
+  <h1>Create your vault</h1>
+  <p class="muted">Choose a master password. You will need it to unlock your encrypted entries.</p>
+  <form method="post">
+    <label>Master password</label>
+    <input type="password" name="master_password" minlength="8" required autofocus>
+    <label>Confirm password</label>
+    <input type="password" name="confirm_password" minlength="8" required>
+    <button class="primary full">Create Vault</button>
+  </form>
+</section>
+{% endblock %}
