@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ p.title }} - Task Manager{% endblock %}
+
+{% block content %}
+<a href="/" class="text-xs text-indigo-400 hover:underline mb-4 inline-block">&larr; Back to Dashboard</a>
+
+<div class="bg-gradient-to-br {{ p.color }} p-8 rounded-3xl shadow-2xl text-white mb-8">
+    <span class="text-xs font-bold uppercase tracking-wider bg-black/20 backdrop-blur px-3 py-1 rounded-full border border-white/20">{{ p.tag }}</span>
+    <h1 class="text-3xl font-extrabold mt-4 mb-2">{{ p.title }}</h1>
+    <p class="text-white/90 text-sm max-w-xl leading-relaxed">{{ p.description }}</p>
+    
+    <div class="mt-6 flex gap-3">
+        <a href="/filter/{{ p.action_filter }}" class="bg-white text-slate-900 font-bold px-5 py-2.5 rounded-xl text-xs hover:bg-slate-100 transition shadow-lg">
+            {{ p.filter_label }} &rarr;
+        </a>
+    </div>
+</div>
+
+<div class="bg-slate-800/80 border border-slate-700 p-6 rounded-2xl">
+    <h3 class="text-md font-bold text-white mb-3">Module Workflow Guidance</h3>
+    <ul class="space-y-2 text-xs text-slate-300 list-disc list-inside">
+        <li>Use this principles page to review best practices for task scheduling and team collaboration.</li>
+        <li>Assign priorities and due dates to keep every milestone visible in real time.</li>
+        <li>Filter and query isolated task views directly from the top navigation panel.</li>
+    </ul>
+</div>
+{% endblock %}

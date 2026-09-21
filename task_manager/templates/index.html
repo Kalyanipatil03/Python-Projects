@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Unique Hero Section -->
+<div class="relative overflow-hidden bg-gradient-to-br from-indigo-900/50 via-slate-800 to-slate-900 border border-slate-700/80 p-8 rounded-3xl shadow-2xl mb-8">
+    <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="relative z-10">
+        <span class="text-xs uppercase tracking-widest font-bold text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-3 py-1 rounded-full">Task Management Framework</span>
+        <h1 class="text-3xl font-extrabold text-white mt-3 mb-2">How to Manage Tasks Effectively</h1>
+        <p class="text-slate-400 text-sm max-w-2xl mb-6">Click any of the 5 core pillars below to open its dedicated workflow and detail page.</p>
+
+        <!-- 5 Principle Cards (Each redirects to /principle/<id>) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+            <a href="/principle/1" class="bg-slate-800/80 hover:bg-slate-700/80 border border-amber-500/30 p-4 rounded-2xl transition group transform hover:-translate-y-1">
+                <span class="text-amber-400 font-extrabold text-xs block">01. Prioritization ⚡</span>
+                <p class="text-xs text-slate-300 mt-1">Classify Low, Medium, High priorities.</p>
+                <span class="text-[10px] text-amber-400/80 group-hover:underline mt-2 inline-block">Open Module &rarr;</span>
+            </a>
+
+            <a href="/principle/2" class="bg-slate-800/80 hover:bg-slate-700/80 border border-rose-500/30 p-4 rounded-2xl transition group transform hover:-translate-y-1">
+                <span class="text-rose-400 font-extrabold text-xs block">02. Milestones 📊</span>
+                <p class="text-xs text-slate-300 mt-1">Track milestone progress goals.</p>
+                <span class="text-[10px] text-rose-400/80 group-hover:underline mt-2 inline-block">Open Module &rarr;</span>
+            </a>
+
+            <a href="/principle/3" class="bg-slate-800/80 hover:bg-slate-700/80 border border-emerald-500/30 p-4 rounded-2xl transition group transform hover:-translate-y-1">
+                <span class="text-emerald-400 font-extrabold text-xs block">03. Schedule 📅</span>
+                <p class="text-xs text-slate-300 mt-1">Schedule due dates & timelines.</p>
+                <span class="text-[10px] text-emerald-400/80 group-hover:underline mt-2 inline-block">Open Module &rarr;</span>
+            </a>
+
+            <a href="/principle/4" class="bg-slate-800/80 hover:bg-slate-700/80 border border-sky-500/30 p-4 rounded-2xl transition group transform hover:-translate-y-1">
+                <span class="text-sky-400 font-extrabold text-xs block">04. Resource 👤</span>
+                <p class="text-xs text-slate-300 mt-1">Allocate assignees & workload.</p>
+                <span class="text-[10px] text-sky-400/80 group-hover:underline mt-2 inline-block">Open Module &rarr;</span>
+            </a>
+
+            <a href="/principle/5" class="bg-slate-800/80 hover:bg-slate-700/80 border border-purple-500/30 p-4 rounded-2xl transition group transform hover:-translate-y-1">
+                <span class="text-purple-400 font-extrabold text-xs block">05. Collaboration 🔒</span>
+                <p class="text-xs text-slate-300 mt-1">Isolated user accounts.</p>
+                <span class="text-[10px] text-purple-400/80 group-hover:underline mt-2 inline-block">Open Module &rarr;</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- 4 Interactive Filter Cards (Redirect to /filter/<type>) -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    <a href="/filter/all" class="bg-slate-800/90 border border-slate-700 p-5 rounded-2xl shadow-lg hover:border-indigo-500/50 transition group">
+        <div class="flex justify-between items-center text-xs text-slate-400 font-semibold uppercase">
+            <span>Total Tasks</span>
+            <span class="text-indigo-400 group-hover:translate-x-1 transition">➔</span>
+        </div>
+        <p class="text-3xl font-extrabold text-white mt-2">{{ total }}</p>
+    </a>
+
+    <a href="/filter/in_progress" class="bg-slate-800/90 border border-slate-700 p-5 rounded-2xl shadow-lg hover:border-amber-500/50 transition group">
+        <div class="flex justify-between items-center text-xs text-amber-400 font-semibold uppercase">
+            <span>In Progress</span>
+            <span class="text-amber-400 group-hover:translate-x-1 transition">➔</span>
+        </div>
+        <p class="text-3xl font-extrabold text-amber-400 mt-2">{{ in_progress }}</p>
+    </a>
+
+    <a href="/filter/completed" class="bg-slate-800/90 border border-slate-700 p-5 rounded-2xl shadow-lg hover:border-emerald-500/50 transition group">
+        <div class="flex justify-between items-center text-xs text-emerald-400 font-semibold uppercase">
+            <span>Completed</span>
+            <span class="text-emerald-400 group-hover:translate-x-1 transition">➔</span>
+        </div>
+        <p class="text-3xl font-extrabold text-emerald-400 mt-2">{{ completed }}</p>
+    </a>
+
+    <a href="/filter/high_priority" class="bg-slate-800/90 border border-slate-700 p-5 rounded-2xl shadow-lg hover:border-rose-500/50 transition group">
+        <div class="flex justify-between items-center text-xs text-rose-400 font-semibold uppercase">
+            <span>High Priority</span>
+            <span class="text-rose-400 group-hover:translate-x-1 transition">➔</span>
+        </div>
+        <p class="text-3xl font-extrabold text-rose-400 mt-2">{{ high_prio }}</p>
+    </a>
+</div>
+
+<!-- Milestone Progress Bar -->
+<div class="bg-slate-800/80 border border-slate-700 p-5 rounded-2xl shadow-md mb-8">
+    <div class="flex justify-between text-xs text-slate-300 font-semibold mb-2">
+        <span>Milestone Overall Goal Completion</span>
+        <span class="text-indigo-400">{{ progress }}% Completed</span>
+    </div>
+    <div class="w-full bg-slate-900 rounded-full h-3.5 p-0.5 border border-slate-700">
+        <div class="bg-gradient-to-r from-indigo-500 to-purple-500 h-2.5 rounded-full transition-all duration-500" style="width: {{ progress }}%"></div>
+    </div>
+</div>
+
+<!-- Add Task Form -->
+<div class="bg-slate-800/80 border border-slate-700 p-6 rounded-2xl shadow-xl mb-8">
+    <h3 class="text-lg font-bold text-white mb-4">Create New Task</h3>
+    <form action="/add_task" method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input type="text" name="title" placeholder="Task Title..." required class="bg-slate-900/80 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-indigo-500">
+        <input type="text" name="assigned_to" placeholder="Resource Allocation (Assignee)" class="bg-slate-900/80 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-indigo-500">
+        
+        <div class="flex gap-4">
+            <select name="priority" class="bg-slate-900/80 border border-slate-700 rounded-xl p-3 text-sm text-slate-300 w-1/2 focus:outline-none focus:border-indigo-500">
+                <option value="Low">Low Priority</option>
+                <option value="Medium" selected>Medium Priority</option>
+                <option value="High">High Priority</option>
+            </select>
+            <input type="date" name="due_date" class="bg-slate-900/80 border border-slate-700 rounded-xl p-3 text-sm text-slate-300 w-1/2 focus:outline-none focus:border-indigo-500">
+        </div>
+
+        <textarea name="description" placeholder="Description & details..." class="bg-slate-900/80 border border-slate-700 rounded-xl p-3 text-sm text-white md:col-span-2 focus:outline-none focus:border-indigo-500" rows="2"></textarea>
+
+        <button type="submit" class="md:col-span-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-indigo-600/30">Create Task</button>
+    </form>
+</div>
+
+<!-- All Tasks List -->
+<div class="space-y-4">
+    <h3 class="text-lg font-bold text-white mb-2">All Registered Tasks</h3>
+    {% for task in tasks %}
+    <div class="bg-slate-800/90 border border-slate-700/80 p-5 rounded-2xl shadow-md flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+            <div class="flex items-center gap-2">
+                <h4 class="font-bold text-white {% if task.status == 'Completed' %}line-through text-slate-500{% endif %}">{{ task.title }}</h4>
+                <span class="text-[10px] px-2 py-0.5 rounded-full font-bold uppercase {% if task.priority == 'High' %}bg-rose-500/20 text-rose-400 border border-rose-500/30{% elif task.priority == 'Medium' %}bg-amber-500/20 text-amber-400 border border-amber-500/30{% else %}bg-slate-700 text-slate-300{% endif %}">
+                    {{ task.priority }} Priority
+                </span>
+            </div>
+
+            {% if task.description %}
+            <p class="text-xs text-slate-400 mt-1">{{ task.description }}</p>
+            {% endif %}
+
+            <div class="flex gap-4 mt-2 text-xs text-slate-400">
+                {% if task.due_date %}
+                <span>📅 Schedule: <strong class="text-slate-200">{{ task.due_date }}</strong></span>
+                {% endif %}
+                {% if task.assigned_to %}
+                <span>👤 Assignee: <strong class="text-indigo-300">{{ task.assigned_to }}</strong></span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+            {% if task.status != 'Completed' %}
+            <a href="/update/{{ task.id }}/In Progress" class="text-xs bg-amber-500/20 text-amber-300 border border-amber-500/30 hover:bg-amber-500 hover:text-white px-3 py-1.5 rounded-lg font-semibold transition">In Progress</a>
+            <a href="/update/{{ task.id }}/Completed" class="text-xs bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500 hover:text-white px-3 py-1.5 rounded-lg font-semibold transition">Done</a>
+            {% endif %}
+            <a href="/delete/{{ task.id }}" class="text-xs bg-rose-500/20 text-rose-300 border border-rose-500/30 hover:bg-rose-500 hover:text-white px-3 py-1.5 rounded-lg font-semibold transition">Delete</a>
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center text-slate-400 py-8 bg-slate-800/40 border border-slate-700/50 rounded-2xl">No tasks found. Create your first task above!</div>
+    {% endfor %}
+</div>
+{% endblock %}
