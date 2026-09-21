@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch History - NetFlix</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-zinc-950 text-white min-h-screen flex flex-col font-sans">
+    <nav class="flex items-center justify-between px-8 py-4 bg-zinc-900 border-b border-zinc-800">
+        <a href="/" class="text-2xl font-black text-red-600">NETFLIX</a>
+        <a href="/" class="text-sm font-medium hover:text-red-500 transition">Back to Home</a>
+    </nav>
+
+    <main class="flex-grow p-8 max-w-4xl mx-auto w-full">
+        <h1 class="text-3xl font-bold mb-6">Watch History</h1>
+
+        {% if history_items %}
+        <div class="space-y-4">
+            {% for item in history_items %}
+            <div class="flex items-center justify-between bg-zinc-900 border border-zinc-800 p-4 rounded-lg">
+                <div class="flex items-center gap-4">
+                    <img src="{{ item.movie.poster }}" class="w-12 h-16 object-cover rounded">
+                    <div>
+                        <h3 class="font-bold text-base">{{ item.movie.title }}</h3>
+                        <p class="text-xs text-zinc-400">Watched on: {{ item.watched_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+                    </div>
+                </div>
+                <a href="/watch/{{ item.movie.id }}" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-xs font-bold rounded transition">Resume</a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-20 text-zinc-500">
+            <p>No watch history records found.</p>
+        </div>
+        {% endif %}
+    </main>
+</body>
+</html>

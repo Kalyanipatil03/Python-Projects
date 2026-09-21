@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamFlix - Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-zinc-950 text-white min-h-screen flex flex-col font-sans">
+
+    <!-- Navigation -->
+    <nav class="flex items-center justify-between px-8 py-4 bg-zinc-900/80 backdrop-blur sticky top-0 z-50 border-b border-zinc-800">
+        <a href="/" class="text-2xl font-black tracking-wider text-red-600">STREAMFLIX</a>
+        
+        <div class="flex items-center gap-6">
+            {% if session.get('user_id') %}
+                <a href="/watchlist" class="text-sm font-medium hover:text-red-500 transition">My Watchlist</a>
+                <a href="/history" class="text-sm font-medium hover:text-red-500 transition">Watch History</a>
+                {% if session.get('is_admin') %}
+                    <a href="/admin" class="text-sm font-medium hover:text-red-500 transition text-yellow-500">Admin</a>
+                {% endif %}
+                <span class="text-sm text-zinc-400">Hi, <strong class="text-white">{{ session.get('username') }}</strong></span>
+                <a href="/logout" class="px-4 py-1.5 bg-red-600 hover:bg-red-700 text-sm font-medium rounded transition">Logout</a>
+            {% else %}
+                <a href="/login" class="px-4 py-1.5 bg-red-600 hover:bg-red-700 text-sm font-medium rounded transition">Sign In</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <main class="flex-grow">
+        <!-- Hero Section -->
+        {% if featured %}
+        <section class="relative h-[60vh] w-full flex items-end bg-cover bg-center" style="background-image: linear-gradient(to top, rgba(9, 9, 11, 1), rgba(9, 9, 11, 0.2)), url('{{ featured.banner }}');">
+            <div class="p-8 max-w-2xl">
+                <span class="inline-block px-3 py-1 bg-red-600 text-xs font-semibold uppercase tracking-wider rounded mb-3">Featured</span>
+                <h1 class="text-5xl font-extrabold mb-3">{{ featured.title }}</h1>
+                <p class="text-zinc-300 text-sm mb-4 line-clamp-3">{{ featured.description }}</p>
+                <div class="flex items-center gap-3">
+                    <a href="/watch/{{ featured.id }}" class="px-6 py-2.5 bg-white text-black font-semibold rounded hover:bg-zinc-200 transition flex items-center gap-2">
+                        <i class="fa-solid fa-play"></i> Watch Now
+                    </a>
+                    <button onclick="toggleWatchlist('{{ featured.id }}', this)" class="px-5 py-2.5 rounded border border-zinc-700 bg-zinc-800/80 hover:bg-zinc-700 transition flex items-center gap-2 {% if featured.id in watchlist_ids %}bg-red-600 border-red-600{% endif %}">
+                        <i class="fa-solid {% if featured.id in watchlist_ids %}fa-check{% else %}fa-plus{% endif %}"></i>
+                        <span>Watchlist</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Filter & Search Controls -->
+        <section class="p-8 max-w-7xl mx-auto space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <!-- Live Search Bar -->
+                <div class="relative w-full md:w-80">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 text-sm"></i>
+                    <input type="text" id="searchInput" onkeyup="filterMovies()" placeholder="Search movies..." class="w-full bg-zinc-900 border border-zinc-800 rounded-lg pl-9 pr-4 py-2 text-sm focus:outline-none focus:border-red-600">
+                </div>
+
+                <!-- Genre Tags -->
+                <div class="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0">
+                    <button onclick="filterGenre('ALL')" class="genre-btn bg-red-600 text-white px-3 py-1.5 rounded-full text-xs font-medium transition">All</button>
+                    {% for genre in genres %}
+                        <button onclick="filterGenre('{{ genre }}')" class="genre-btn bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white px-3 py-1.5 rounded-full text-xs font-medium transition">{{ genre }}</button>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Movie Catalog Grid -->
+            <div id="movieGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                {% for movie in movies %}
+                <div class="movie-card bg-zinc-900 rounded-lg overflow-hidden border border-zinc-800 hover:border-zinc-700 transition flex flex-col justify-between group" data-title="{{ movie.title | lower }}" data-genre="{{ movie.genre }}">
+                    <div class="relative overflow-hidden aspect-[2/3]">
+                        <img src="{{ movie.poster }}" alt="{{ movie.title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                            <a href="/watch/{{ movie.id }}" class="p-3 bg-red-600 rounded-full text-white hover:scale-110 transition">
+                                <i class="fa-solid fa-play"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow justify-between">
+                        <div>
+                            <h3 class="font-bold text-base truncate">{{ movie.title }}</h3>
+                            <div class="flex items-center justify-between text-xs text-zinc-400 mt-1">
+                                <span>{{ movie.genre }}</span>
+                                <span><i class="fa-solid fa-star text-yellow-500 mr-1"></i>{{ movie.rating }}</span>
+                            </div>
+                        </div>
+                        <button onclick="toggleWatchlist('{{ movie.id }}', this)" class="mt-4 w-full py-1.5 px-3 rounded border border-zinc-700 bg-zinc-800 hover:bg-zinc-700 transition text-xs font-medium flex items-center justify-center gap-2 {% if movie.id in watchlist_ids %}bg-red-600 border-red-600{% endif %}">
+                            <i class="fa-solid {% if movie.id in watchlist_ids %}fa-check{% else %}fa-plus{% endif %}"></i>
+                            <span>Watchlist</span>
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+
+    <!-- Interactive Client Scripts -->
+    <script>
+        let selectedGenre = 'ALL';
+
+        function filterMovies() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.movie-card');
+
+            cards.forEach(card => {
+                const title = card.getAttribute('data-title');
+                const genre = card.getAttribute('data-genre');
+
+                const matchesSearch = title.includes(query);
+                const matchesGenre = selectedGenre === 'ALL' || genre === selectedGenre;
+
+                if (matchesSearch && matchesGenre) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        function filterGenre(genre) {
+            selectedGenre = genre;
+            
+            // Highlight active button
+            document.querySelectorAll('.genre-btn').forEach(btn => {
+                if (btn.innerText.trim().toUpperCase() === genre.toUpperCase() || (genre === 'ALL' && btn.innerText.trim() === 'All')) {
+                    btn.className = 'genre-btn bg-red-600 text-white px-3 py-1.5 rounded-full text-xs font-medium transition';
+                } else {
+                    btn.className = 'genre-btn bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white px-3 py-1.5 rounded-full text-xs font-medium transition';
+                }
+            });
+
+            filterMovies();
+        }
+
+        async function toggleWatchlist(movieId, buttonElement) {
+            try {
+                const response = await fetch(`/toggle-watchlist/${movieId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (response.status === 401) {
+                    window.location.href = '/login';
+                    return;
+                }
+
+                const data = await response.json();
+                if (data.success) {
+                    const icon = buttonElement.querySelector('i');
+                    if (data.added) {
+                        buttonElement.classList.add('bg-red-600', 'border-red-600');
+                        icon.className = 'fa-solid fa-check';
+                    } else {
+                        buttonElement.classList.remove('bg-red-600', 'border-red-600');
+                        icon.className = 'fa-solid fa-plus';
+                    }
+                }
+            } catch (error) {
+                console.error('Error toggling watchlist:', error);
+            }
+        }
+    </script>
+</body>
+</html>

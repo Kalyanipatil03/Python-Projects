@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watching {{ movie.title }} - NetFlix</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-black text-white min-h-screen flex flex-col">
+    <div class="p-4 flex items-center justify-between bg-zinc-900 border-b border-zinc-800">
+        <a href="/" class="flex items-center gap-2 text-zinc-400 hover:text-white transition">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Back to Home</span>
+        </a>
+        <h1 class="text-lg font-bold truncate max-w-md">{{ movie.title }}</h1>
+        <div></div>
+    </div>
+
+    <div class="flex-grow flex items-center justify-center p-4">
+        <div class="w-full max-w-5xl aspect-video bg-zinc-900 rounded-lg overflow-hidden shadow-2xl">
+            <video class="w-full h-full" controls autoplay>
+                <source src="{{ movie.video_url }}" type="video/mp4">
+                Your browser does not support HTML5 video playback.
+            </video>
+        </div>
+    </div>
+</body>
+</html>
