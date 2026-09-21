@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6">
+    <div class="flex items-center justify-between border-b border-zinc-800 pb-4">
+        <div>
+            <h1 class="text-2xl font-bold">Author Dashboard</h1>
+            <p class="text-xs text-zinc-400">Manage your published posts and drafts</p>
+        </div>
+        <a href="/write" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition">
+            <i class="fa-solid fa-plus"></i> New Article
+        </a>
+    </div>
+
+    {% if articles %}
+        <div class="space-y-4">
+            {% for article in articles %}
+            <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 flex items-center justify-between">
+                <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <a href="/post/{{ article.slug }}" class="font-bold text-base hover:text-indigo-400 transition">{{ article.title }}</a>
+                        {% if article.is_published %}
+                            <span class="bg-emerald-500/10 text-emerald-400 text-[10px] font-semibold px-2 py-0.5 rounded border border-emerald-500/20">Published</span>
+                        {% else %}
+                            <span class="bg-amber-500/10 text-amber-400 text-[10px] font-semibold px-2 py-0.5 rounded border border-amber-500/20">Draft</span>
+                        {% endif %}
+                    </div>
+                    <div class="text-xs text-zinc-500 flex items-center gap-3">
+                        <span>Created: {{ article.created_at.strftime('%b %d, %Y') }}</span>
+                        <span>•</span>
+                        <span>{{ article.views }} Views</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <a href="/post/{{ article.slug }}" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs px-3 py-1.5 rounded transition">View</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="bg-zinc-900/50 border border-zinc-800 rounded-xl p-12 text-center text-zinc-500">
+            <p class="text-sm mb-4">You haven't written any articles yet.</p>
+            <a href="/write" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-xs font-semibold inline-block transition">Write Your First Post</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

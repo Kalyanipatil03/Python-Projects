@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}DevPulse — Developer Publishing Platform{% endblock %}</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="bg-zinc-950 text-zinc-100 min-h-screen flex flex-col font-sans">
+    <nav class="border-b border-zinc-800 bg-zinc-900/50 backdrop-blur sticky top-0 z-50 px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-6">
+            <a href="/" class="text-xl font-black text-indigo-500 tracking-tight">DEV<span class="text-white">PULSE</span></a>
+            <form action="/search" method="GET" class="relative hidden sm:block">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 text-xs"></i>
+                <input type="text" name="q" placeholder="Search developer articles..." class="bg-zinc-800 border border-zinc-700/60 rounded-full pl-8 pr-4 py-1.5 text-xs focus:outline-none focus:border-indigo-500 w-64 text-white">
+            </form>
+        </div>
+        <div class="flex items-center gap-4">
+            <a href="/explore" class="text-xs text-zinc-300 hover:text-white font-medium hidden md:inline">Explore</a>
+            {% if current_user.is_authenticated %}
+                <a href="/write" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-pen-to-square"></i> Write
+                </a>
+                <a href="/dashboard" class="text-xs text-zinc-300 hover:text-white font-medium">Dashboard</a>
+                {% if current_user.is_admin %}
+                    <a href="/admin" class="text-xs text-amber-400 hover:text-amber-300 font-medium">Admin</a>
+                {% endif %}
+                <a href="/auth/logout" class="text-xs text-zinc-400 hover:text-red-400 transition">Logout</a>
+            {% else %}
+                <a href="/auth/login" class="text-xs text-zinc-300 hover:text-white font-medium">Sign In</a>
+                <a href="/auth/register" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition">Get Started</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <main class="flex-grow max-w-6xl w-full mx-auto p-6">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

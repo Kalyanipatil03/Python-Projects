@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-4xl mx-auto bg-zinc-900 border border-zinc-800 p-8 rounded-xl shadow-xl">
+    <h1 class="text-2xl font-bold mb-6 text-white">Create New Article</h1>
+    
+    <form method="POST" action="/write" class="space-y-5">
+        <div>
+            <label class="block text-xs font-medium text-zinc-400 mb-1">Article Title</label>
+            <input type="text" name="title" placeholder="e.g. Building a REST API with Flask & SQLAlchemy" required class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3 text-lg font-bold text-white focus:outline-none focus:border-indigo-500">
+        </div>
+        
+        <div>
+            <label class="block text-xs font-medium text-zinc-400 mb-1">Tags</label>
+            <input type="text" name="tags" placeholder="Comma separated tags (e.g. Python, Flask, WebDev)" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+        </div>
+        
+        <div>
+            <label class="block text-xs font-medium text-zinc-400 mb-1">Summary / Excerpt</label>
+            <textarea name="summary" placeholder="Provide a quick 1-2 sentence overview of your post..." class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3 text-xs text-white h-20 focus:outline-none focus:border-indigo-500"></textarea>
+        </div>
+        
+        <div>
+            <label class="block text-xs font-medium text-zinc-400 mb-1">Markdown Content</label>
+            <textarea name="content" placeholder="Write markdown content here..." required class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3 text-sm text-zinc-200 h-80 font-mono focus:outline-none focus:border-indigo-500"></textarea>
+        </div>
+        
+        <div class="flex items-center gap-4 pt-2">
+            <button type="submit" name="is_published" value="true" class="bg-indigo-600 hover:bg-indigo-500 font-semibold text-xs text-white px-5 py-2.5 rounded-lg transition">Publish Post</button>
+            <button type="submit" name="is_published" value="false" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-semibold text-xs px-5 py-2.5 rounded-lg transition">Save Draft</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

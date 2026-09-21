@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="space-y-6">
+    <div class="border-b border-zinc-800 pb-4">
+        {% if query %}
+            <h1 class="text-2xl font-bold text-white">Search Results for "<span class="text-indigo-400">{{ query }}</span>"</h1>
+        {% else %}
+            <h1 class="text-2xl font-bold text-white">Explore All Articles</h1>
+        {% endif %}
+    </div>
+
+    {# Cleanly handle both pagination items and direct search articles #}
+    {% set articles_list = search_articles if search_articles else (pagination.items if pagination else []) %}
+
+    {% if articles_list %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for article in articles_list %}
+            <article class="bg-zinc-900 border border-zinc-800 rounded-xl p-5 flex flex-col justify-between hover:border-zinc-700 transition">
+                <div>
+                    <div class="flex items-center gap-2 text-xs text-zinc-400 mb-2">
+                        <a href="/user/{{ article.author.username }}" class="font-semibold text-white hover:text-indigo-400 transition">{{ article.author.display_name }}</a>
+                        <span>•</span>
+                        <span>{{ article.created_at|timeago if article.created_at else '' }}</span>
+                    </div>
+                    <a href="/post/{{ article.slug }}" class="text-lg font-bold text-white hover:text-indigo-400 transition block mb-2">{{ article.title }}</a>
+                    <p class="text-zinc-400 text-xs mb-4 line-clamp-3">{{ article.summary }}</p>
+                </div>
+                <div>
+                    <div class="flex flex-wrap gap-1.5 mb-3">
+                        {% for tag in article.tags %}
+                        <a href="/search?q={{ tag.name }}" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-[10px] font-mono px-2 py-0.5 rounded transition">#{{ tag.name }}</a>
+                        {% endfor %}
+                    </div>
+                    <div class="text-[11px] text-zinc-500 font-mono">{{ article.reading_time }} min read • {{ article.views }} views</div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+
+        {# Pagination Controls #}
+        {% if pagination and pagination.pages > 1 %}
+        <div class="flex justify-center items-center gap-3 pt-6">
+            {% if pagination.has_prev %}
+                <a href="/explore?page={{ pagination.prev_num }}" class="bg-zinc-800 hover:bg-zinc-700 text-white text-xs px-3.5 py-2 rounded-lg transition font-medium">Previous</a>
+            {% endif %}
+            <span class="text-xs text-zinc-400 font-mono">Page {{ pagination.page }} of {{ pagination.pages }}</span>
+            {% if pagination.has_next %}
+                <a href="/explore?page={{ pagination.next_num }}" class="bg-zinc-800 hover:bg-zinc-700 text-white text-xs px-3.5 py-2 rounded-lg transition font-medium">Next</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    {% else %}
+        <div class="bg-zinc-900/50 border border-zinc-800 rounded-xl p-12 text-center text-zinc-500">
+            <i class="fa-solid fa-newspaper text-3xl mb-3 block text-zinc-600"></i>
+            <p class="text-sm">No articles found.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

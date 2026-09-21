@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}{{ article.title }} — DevPulse{% endblock %}
+
+{% block content %}
+<article class="max-w-3xl mx-auto py-6">
+    <header class="mb-8">
+        <h1 class="text-3xl md:text-4xl font-black mb-4 leading-tight text-white">{{ article.title }}</h1>
+        
+        <div class="flex items-center justify-between border-b border-zinc-800 pb-4 text-xs text-zinc-400">
+            <div class="flex items-center gap-2">
+                <div>Written by <strong class="text-white">{{ article.author.display_name }}</strong></div>
+                <span>•</span>
+                <div>{{ article.created_at.strftime('%b %d, %Y') }}</div>
+            </div>
+            <div class="flex items-center gap-4">
+                <span>{{ article.reading_time }} min read</span>
+                <span>•</span>
+                <span>{{ article.views }} views</span>
+                <button class="like-btn text-zinc-400 hover:text-rose-500 text-xs flex items-center gap-1.5 bg-zinc-900 px-3 py-1 rounded-lg border border-zinc-800 transition {% if current_user.is_authenticated and current_user in article.likers %}text-rose-500{% endif %}" data-article-id="{{ article.id }}">
+                    <i class="{% if current_user.is_authenticated and current_user in article.likers %}fa-solid{% else %}fa-regular{% endif %} fa-heart"></i>
+                    <span class="like-count">{{ article.likers.count() }}</span> Likes
+                </button>
+            </div>
+        </div>
+        
+        {% if article.tags %}
+        <div class="flex flex-wrap gap-2 mt-4">
+            {% for tag in article.tags %}
+            <a href="/search?q={{ tag.name }}" class="bg-zinc-800 text-zinc-300 text-xs font-mono px-2.5 py-1 rounded border border-zinc-700/50 hover:bg-zinc-700 transition">#{{ tag.name }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </header>
+
+    <div class="prose text-zinc-300 leading-relaxed max-w-none">
+        {{ article.content | markdown | safe }}
+    </div>
+</article>
+{% endblock %}

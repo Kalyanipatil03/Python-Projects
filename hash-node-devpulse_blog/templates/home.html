@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="space-y-10">
+
+    <!-- Hero Section -->
+    <section class="relative bg-gradient-to-r from-indigo-950/60 via-zinc-900 to-zinc-950 border border-indigo-500/20 rounded-2xl p-8 md:p-12 overflow-hidden shadow-2xl">
+        <div class="max-w-2xl space-y-4 relative z-10">
+            <span class="inline-flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-xs px-3 py-1 rounded-full font-mono">
+                <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span> Open Platform for Engineers
+            </span>
+            <h1 class="text-3xl md:text-5xl font-black text-white tracking-tight leading-tight">
+                Publish code, share insights, build your dev presence.
+            </h1>
+            <p class="text-zinc-400 text-sm md:text-base leading-relaxed">
+                DevPulse is a community-driven developer platform for technical articles, architecture deep-dives, and modern engineering blogs.
+            </p>
+            <div class="flex items-center gap-3 pt-2">
+                {% if not current_user.is_authenticated %}
+                    <a href="/auth/register" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs px-5 py-3 rounded-xl transition shadow-lg shadow-indigo-600/30">Start Writing Free</a>
+                    <a href="/explore" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-semibold text-xs px-5 py-3 rounded-xl transition">Explore Feed</a>
+                {% else %}
+                    <a href="/write" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs px-5 py-3 rounded-xl transition shadow-lg shadow-indigo-600/30">
+                        <i class="fa-solid fa-pen-to-square mr-1"></i> Write New Post
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Top Featured Spotlight (If Articles Exist) -->
+    {% if featured %}
+    <section class="space-y-3">
+        <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-400">
+            <i class="fa-solid fa-fire text-sm"></i> Featured Article
+        </div>
+        <div class="bg-zinc-900 border border-amber-500/30 rounded-2xl p-6 md:p-8 hover:border-amber-500/60 transition shadow-xl">
+            <div class="flex items-center gap-3 text-xs text-zinc-400 mb-3">
+                <a href="/user/{{ featured.author.username }}" class="font-bold text-white hover:text-indigo-400 transition">{{ featured.author.display_name }}</a>
+                <span>•</span>
+                <span>{{ featured.created_at|timeago }}</span>
+                <span>•</span>
+                <span class="text-indigo-400 font-mono">{{ featured.reading_time }} min read</span>
+            </div>
+            <a href="/post/{{ featured.slug }}" class="text-2xl md:text-3xl font-black text-white hover:text-indigo-400 transition block mb-3">
+                {{ featured.title }}
+            </a>
+            <p class="text-zinc-400 text-sm leading-relaxed mb-6 line-clamp-3">
+                {{ featured.summary }}
+            </p>
+            <div class="flex items-center justify-between">
+                <div class="flex flex-wrap gap-2">
+                    {% for tag in featured.tags %}
+                    <a href="/search?q={{ tag.name }}" class="bg-zinc-800 border border-zinc-700/60 text-zinc-300 text-xs font-mono px-3 py-1 rounded-lg hover:border-indigo-500 transition">#{{ tag.name }}</a>
+                    {% endfor %}
+                </div>
+                <a href="/post/{{ featured.slug }}" class="text-indigo-400 hover:text-indigo-300 font-bold text-xs flex items-center gap-1.5 transition">
+                    Read Story <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Main Feed + Sidebar Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- Articles Feed -->
+        <div class="lg:col-span-2 space-y-6">
+            <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+                <h2 class="text-lg font-extrabold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-newspaper text-indigo-500"></i> Latest Engineering Posts
+                </h2>
+                <a href="/explore" class="text-xs text-indigo-400 hover:text-indigo-300 font-medium transition">View all →</a>
+            </div>
+
+            {% if articles %}
+                {% for article in articles %}
+                <article class="bg-zinc-900/80 border border-zinc-800 rounded-xl p-5 hover:border-zinc-700 transition space-y-3">
+                    <div class="flex items-center justify-between text-xs text-zinc-400">
+                        <div class="flex items-center gap-2">
+                            <a href="/user/{{ article.author.username }}" class="font-bold text-white hover:text-indigo-400 transition">{{ article.author.display_name }}</a>
+                            <span>•</span>
+                            <span>{{ article.created_at|timeago }}</span>
+                        </div>
+                        <button class="like-btn text-zinc-400 hover:text-rose-500 text-xs flex items-center gap-1.5 bg-zinc-800/60 px-2.5 py-1 rounded-lg transition {% if current_user.is_authenticated and current_user in article.likers %}text-rose-500{% endif %}" data-article-id="{{ article.id }}">
+                            <i class="{% if current_user.is_authenticated and current_user in article.likers %}fa-solid{% else %}fa-regular{% endif %} fa-heart"></i>
+                            <span class="like-count font-mono">{{ article.likers.count() }}</span>
+                        </button>
+                    </div>
+
+                    <a href="/post/{{ article.slug }}" class="text-xl font-bold text-white hover:text-indigo-400 transition block">{{ article.title }}</a>
+                    <p class="text-zinc-400 text-xs leading-relaxed line-clamp-2">{{ article.summary }}</p>
+
+                    <div class="flex items-center justify-between pt-2">
+                        <div class="flex flex-wrap gap-1.5">
+                            {% for tag in article.tags %}
+                            <a href="/search?q={{ tag.name }}" class="bg-zinc-800/80 border border-zinc-700/50 hover:bg-zinc-700 text-zinc-300 text-[11px] font-mono px-2.5 py-0.5 rounded transition">#{{ tag.name }}</a>
+                            {% endfor %}
+                        </div>
+                        <span class="text-[11px] text-zinc-500 font-mono"><i class="fa-regular fa-clock"></i> {{ article.reading_time }} min read</span>
+                    </div>
+                </article>
+                {% endfor %}
+            {% else %}
+                <div class="bg-zinc-900/50 border border-zinc-800 rounded-xl p-12 text-center text-zinc-500">
+                    <p>No published articles yet.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="space-y-6">
+            <!-- Trending Topics -->
+            <div class="bg-zinc-900 border border-zinc-800 p-5 rounded-xl">
+                <h3 class="font-bold text-xs uppercase tracking-wider text-zinc-400 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-hashtag text-indigo-400"></i> Trending Topics
+                </h3>
+                <div class="flex flex-wrap gap-2">
+                    {% for tag in tags %}
+                    <a href="/search?q={{ tag.name }}" class="bg-zinc-800/80 border border-zinc-700/50 hover:bg-indigo-600 hover:text-white text-xs text-zinc-300 px-3 py-1 rounded-full cursor-pointer transition font-mono">#{{ tag.name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Most Read Articles -->
+            <div class="bg-zinc-900 border border-zinc-800 p-5 rounded-xl">
+                <h3 class="font-bold text-xs uppercase tracking-wider text-zinc-400 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-chart-line text-indigo-400"></i> Most Read
+                </h3>
+                <div class="space-y-4">
+                    {% for item in trending %}
+                    <a href="/post/{{ item.slug }}" class="block group">
+                        <h4 class="text-xs font-semibold text-zinc-300 group-hover:text-indigo-400 line-clamp-2 transition leading-snug">{{ item.title }}</h4>
+                        <div class="flex items-center gap-2 text-[10px] text-zinc-500 mt-1 font-mono">
+                            <span><i class="fa-regular fa-eye"></i> {{ item.views }} views</span>
+                            <span>•</span>
+                            <span>{{ item.reading_time }} min read</span>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </aside>
+
+    </div>
+</div>
+{% endblock %}
