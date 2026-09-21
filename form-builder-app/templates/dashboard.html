@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Form Builder Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen p-8">
+    <div class="max-w-5xl mx-auto space-y-6">
+        <div class="flex justify-between items-center">
+            <h1 class="text-2xl font-bold">My Forms</h1>
+            <a href="/builder" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl text-sm font-semibold">+ Create New Form</a>
+        </div>
+
+        <div class="grid gap-4">
+            {% for form in forms %}
+            <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl flex justify-between items-center">
+                <div>
+                    <h3 class="font-bold text-lg text-slate-100">{{ form.title }}</h3>
+                    <p class="text-xs text-slate-400">Created: {{ form.created_at.strftime('%Y-%m-%d') }} | Responses: {{ form.responses|length }}</p>
+                </div>
+                <div class="flex gap-2">
+                    <a href="/s/{{ form.share_code }}" target="_blank" class="bg-slate-800 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-slate-700">Live Form</a>
+                    <a href="/form/{{ form.share_code }}/responses" class="bg-indigo-600/20 text-indigo-400 px-3 py-1.5 rounded-lg text-xs font-semibold border border-indigo-500/30">View Answers</a>
+                </div>
+            </div>
+            {% else %}
+            <p class="text-slate-500 text-sm">No forms created yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
