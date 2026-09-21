@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-zinc-800 pb-6">
+        <div>
+            <h1 class="text-2xl font-black text-white">Explore Knowledge</h1>
+            <p class="text-xs text-zinc-400">Discover snippets, tutorials, and technical discussions.</p>
+        </div>
+
+        <!-- Filter Pills -->
+        <div class="flex flex-wrap gap-2 text-xs">
+            <a href="/explore" class="px-3 py-1.5 rounded-lg border {% if not active_type %}bg-emerald-500/10 border-emerald-500 text-emerald-400{% else %}bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white{% endif %}">All</a>
+            <a href="/explore?type=Tutorial" class="px-3 py-1.5 rounded-lg border {% if active_type == 'Tutorial' %}bg-emerald-500/10 border-emerald-500 text-emerald-400{% else %}bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white{% endif %}">Tutorials</a>
+            <a href="/explore?type=Snippet" class="px-3 py-1.5 rounded-lg border {% if active_type == 'Snippet' %}bg-emerald-500/10 border-emerald-500 text-emerald-400{% else %}bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white{% endif %}">Snippets</a>
+            <a href="/explore?type=Question" class="px-3 py-1.5 rounded-lg border {% if active_type == 'Question' %}bg-emerald-500/10 border-emerald-500 text-emerald-400{% else %}bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white{% endif %}">Questions</a>
+        </div>
+    </div>
+
+    {% set posts_list = search_posts if search_posts is defined else (pagination.items if pagination else []) %}
+
+    {% if posts_list %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {% for post in posts_list %}
+        <article class="bg-zinc-900/70 border border-zinc-800 p-5 rounded-xl hover:border-zinc-700 transition flex flex-col justify-between space-y-4">
+            <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                    <span class="text-[10px] bg-zinc-800 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded font-mono">{{ post.post_type }}</span>
+                    <span class="text-[11px] text-zinc-500 font-mono">{{ post.created_at|timeago }}</span>
+                </div>
+                <a href="/post/{{ post.slug }}" class="text-base font-bold text-white hover:text-emerald-400 block">{{ post.title }}</a>
+                <p class="text-xs text-zinc-400 line-clamp-2 leading-relaxed">{{ post.summary }}</p>
+            </div>
+
+            <div class="pt-3 border-t border-zinc-800/60 flex justify-between items-center text-xs text-zinc-500">
+                <a href="/u/{{ post.author.username }}" class="hover:text-zinc-300 font-medium">@{{ post.author.username }}</a>
+                <div class="flex items-center gap-3">
+                    <span><i class="fa-regular fa-eye"></i> {{ post.views }}</span>
+                    <span><i class="fa-regular fa-heart"></i> {{ post.likers.count() }}</span>
+                </div>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-16 bg-zinc-900/30 rounded-xl border border-dashed border-zinc-800">
+        <p class="text-zinc-400 text-sm">No posts found matching your criteria.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

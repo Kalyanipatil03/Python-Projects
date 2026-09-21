@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="space-y-6">
+    <h1 class="text-2xl font-black text-white">Admin Dashboard</h1>
+
+    <div class="grid grid-cols-3 gap-4">
+        <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-xl text-center">
+            <div class="text-2xl font-bold text-emerald-400">{{ stats.users }}</div>
+            <div class="text-xs text-zinc-400">Total Users</div>
+        </div>
+        <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-xl text-center">
+            <div class="text-2xl font-bold text-emerald-400">{{ stats.posts }}</div>
+            <div class="text-xs text-zinc-400">Total Posts</div>
+        </div>
+        <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-xl text-center">
+            <div class="text-2xl font-bold text-emerald-400">{{ stats.comments }}</div>
+            <div class="text-xs text-zinc-400">Total Comments</div>
+        </div>
+    </div>
+
+    <div class="space-y-3">
+        <h2 class="text-base font-bold text-white">Manage Posts</h2>
+        {% for post in posts %}
+        <div class="bg-zinc-900 border border-zinc-800 p-3 rounded-lg flex justify-between items-center text-xs">
+            <span class="text-zinc-200 font-semibold">{{ post.title }}</span>
+            <form action="/admin/post/delete/{{ post.id }}" method="POST">
+                <button type="submit" class="bg-red-600/20 text-red-400 border border-red-500/30 px-2 py-1 rounded hover:bg-red-600 hover:text-white transition">Delete</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

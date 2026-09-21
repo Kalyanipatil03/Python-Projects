@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="space-y-12">
+    <!-- Hero Section -->
+    <section class="text-center py-12 border-b border-zinc-800 space-y-4">
+        <h1 class="text-4xl md:text-5xl font-black text-white tracking-tight">Architect, Share, and Scale <br><span class="text-emerald-400">Developer Knowledge</span></h1>
+        <p class="text-sm text-zinc-400 max-w-xl mx-auto leading-relaxed">Join a minimalist community built for software engineers to publish write-ups, share code snippets, and solve technical challenges.</p>
+        <div class="pt-2 flex justify-center gap-3">
+            <a href="/explore" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-5 py-2.5 rounded-lg transition">Explore Content</a>
+            {% if not current_user.is_authenticated %}
+            <a href="/auth/register" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-bold px-5 py-2.5 rounded-lg transition">Join Community</a>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Featured Section -->
+    {% if featured_posts %}
+    <section class="space-y-4">
+        <h2 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-fire text-amber-400"></i> Top Discussions</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {% for post in featured_posts %}
+            <article class="bg-zinc-900 border border-zinc-800/80 p-5 rounded-xl hover:border-zinc-700 transition flex flex-col justify-between space-y-3">
+                <div class="space-y-3">
+                    <span class="text-[10px] bg-zinc-800 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded font-mono">{{ post.post_type }}</span>
+                    <a href="/post/{{ post.slug }}" class="text-base font-bold text-white hover:text-emerald-400 block leading-snug">{{ post.title }}</a>
+                    <p class="text-xs text-zinc-400 line-clamp-3">{{ post.summary }}</p>
+                </div>
+                <div class="pt-4 text-xs text-zinc-500 flex justify-between items-center border-t border-zinc-800/60 mt-4">
+                    <span>{{ post.author.display_name }}</span>
+                    <span>{{ post.views }} views</span>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Recent Posts Section -->
+    <section class="space-y-4">
+        <div class="flex justify-between items-center">
+            <h2 class="text-lg font-bold text-white">Latest Articles</h2>
+            <a href="/explore" class="text-xs text-emerald-400 hover:underline">View All &rarr;</a>
+        </div>
+
+        <div class="space-y-3">
+            {% for post in recent_posts %}
+            <article class="bg-zinc-900/60 border border-zinc-800 p-4 rounded-xl flex items-center justify-between hover:border-zinc-700 transition">
+                <div class="space-y-1">
+                    <div class="flex items-center gap-2">
+                        <span class="text-[10px] bg-zinc-800 text-emerald-400 px-2 py-0.5 rounded font-mono">{{ post.post_type }}</span>
+                        <a href="/post/{{ post.slug }}" class="text-sm font-bold text-white hover:text-emerald-400">{{ post.title }}</a>
+                    </div>
+                    <p class="text-xs text-zinc-400 line-clamp-1">{{ post.summary }}</p>
+                </div>
+                <span class="text-xs text-zinc-500 shrink-0 font-mono pl-4">{{ post.created_at|timeago }}</span>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}

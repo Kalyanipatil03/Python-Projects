@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-2xl mx-auto space-y-6">
+    <div>
+        <h1 class="text-2xl font-black text-white">Publish New Entry</h1>
+        <p class="text-xs text-zinc-400">Share your code, write-up, or question with the community.</p>
+    </div>
+
+    <form method="POST" class="space-y-4 bg-zinc-900/60 border border-zinc-800 p-6 rounded-xl">
+        <div class="space-y-1">
+            <label class="text-xs font-semibold text-zinc-300">Title</label>
+            <input type="text" name="title" required class="w-full bg-zinc-900 border border-zinc-800 text-xs text-white p-2.5 rounded-lg focus:outline-none focus:border-emerald-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-1">
+                <label class="text-xs font-semibold text-zinc-300">Post Type</label>
+                <select name="post_type" class="w-full bg-zinc-900 border border-zinc-800 text-xs text-white p-2.5 rounded-lg focus:outline-none focus:border-emerald-500">
+                    <option value="Tutorial">Tutorial</option>
+                    <option value="Snippet">Snippet</option>
+                    <option value="Question">Question</option>
+                    <option value="Discussion">Discussion</option>
+                </select>
+            </div>
+            <div class="space-y-1">
+                <label class="text-xs font-semibold text-zinc-300">Language (Optional)</label>
+                <input type="text" name="code_language" placeholder="e.g. python, javascript" class="w-full bg-zinc-900 border border-zinc-800 text-xs text-white p-2.5 rounded-lg focus:outline-none focus:border-emerald-500">
+            </div>
+        </div>
+
+        <div class="space-y-1">
+            <label class="text-xs font-semibold text-zinc-300">Short Summary</label>
+            <input type="text" name="summary" required placeholder="A quick one-sentence summary" class="w-full bg-zinc-900 border border-zinc-800 text-xs text-white p-2.5 rounded-lg focus:outline-none focus:border-emerald-500">
+        </div>
+
+        <div class="space-y-1">
+            <label class="text-xs font-semibold text-zinc-300">Content (Markdown Supported)</label>
+            <textarea name="content" rows="10" required class="w-full bg-zinc-900 border border-zinc-800 text-xs text-white p-3 rounded-lg font-mono focus:outline-none focus:border-emerald-500"></textarea>
+        </div>
+
+        <div class="space-y-1">
+            <label class="text-xs font-semibold text-zinc-300">Tags (Comma-separated)</label>
+            <input type="text" name="tags" placeholder="python, flask, webdev" class="w-full bg-zinc-900 border border-zinc-800 text-xs text-white p-2.5 rounded-lg focus:outline-none focus:border-emerald-500">
+        </div>
+
+        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-3 rounded-lg transition">Publish Post</button>
+    </form>
+</div>
+{% endblock %}

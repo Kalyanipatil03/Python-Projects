@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-3xl mx-auto space-y-6">
+    <h1 class="text-2xl font-black text-white">Saved Library</h1>
+    <div class="space-y-3">
+        {% for post in posts %}
+        <article class="bg-zinc-900/60 border border-zinc-800 p-4 rounded-xl flex justify-between items-center">
+            <a href="/post/{{ post.slug }}" class="text-sm font-bold text-white hover:text-emerald-400">{{ post.title }}</a>
+            <span class="text-xs text-zinc-500 font-mono">By @{{ post.author.username }}</span>
+        </article>
+        {% else %}
+        <p class="text-xs text-zinc-500">You haven't bookmarked any posts yet.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
